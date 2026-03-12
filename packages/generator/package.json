@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Generator for RSP setup configuration",
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm run generate",
     "generate": "node --import tsx src/generate.ts"
   },
   "devDependencies": {

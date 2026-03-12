@@ -4,9 +4,23 @@ export default {
   order: 50,
   name: 'symlink',
   category: 'common',
-  generate: (ctx) => `## Step 2: Create Symlinks from .github/ to .rsp/
+  generate: (ctx) => `## Step 2: Migrate Existing Data
 
-Create symlinks so that GitHub Copilot can read configurations from \`.rsp/\` via \`.github/\`.
+Before creating new symlinks, check if the project already has Agent configurations in other directories. **Be careful: these paths might already be symlinks pointing elsewhere!** You must find the true Single Source of Truth and migrate it to the new \`.rsp/\` structure.
+
+1. **Check for existing skills directories (e.g., \`.github/skills/\`, \`.claude/skills/\`)**:
+   - If they exist and are **real directories**, move all their contents to \`.rsp/skills/\` and remove the original directories.
+   - If they exist and are **symlinks**, resolve them to find their true target directories (e.g., using \`readlink -f\` or \`ls -l\`). Move the contents of those *true target directories* to \`.rsp/skills/\`. Then, delete both the original true target directories and the old symlinks.
+2. **Check \`.vscode/mcp.json\`**: If it exists, ensure its contents are preserved. (Note: MCP configurations typically stay in \`.vscode/mcp.json\`, but verify if any custom MCP server scripts need to be moved to \`.rsp/mcp/\`).
+
+**Example Migration Logic for the Agent**:
+- Always verify if a path is a directory or a symlink first.
+- Move the actual source data to the \`.rsp/\` unified folder.
+- Clean up any leftover legacy symlinks or empty target folders to avoid conflicts in Step 3.
+
+## Step 3: Create Symlinks
+
+Create symlinks so that various AI agents (like GitHub Copilot) can read configurations from the unified \`.rsp/\` directory.
 
 ### macOS / Linux
 
@@ -46,3 +60,4 @@ Add to your \`.gitattributes\` file (create if it doesn't exist):
 * text=auto
 \`\`\``
 } satisfies InstallModule;
+
