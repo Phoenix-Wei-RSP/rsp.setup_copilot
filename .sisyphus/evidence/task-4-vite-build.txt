@@ -1,0 +1,17 @@
+Vite Build Test - PASSED
+=========================
+
+Command: pnpm --filter @rsp/web run build
+
+Result: EXIT CODE 0 (SUCCESS)
+
+Build Output:
+- vite v5.4.21 building for production
+- 36 modules transformed
+- dist/index.html                 0.52 kB | gzip:  0.31 kB
+- dist/assets/index-DRWLy2gZ.css  0.23 kB | gzip:  0.20 kB
+- dist/assets/index-CrR-LK1P.js   159.00 kB | gzip: 51.76 kB
+- Built in 543ms
+
+Verification:
+- File: packages/web/dist/index.html EXISTS ✓
