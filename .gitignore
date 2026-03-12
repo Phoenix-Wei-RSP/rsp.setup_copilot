@@ -1,0 +1,4 @@
+.sisyphus/
+node_modules
+packages/*/node_modules
+packages/*/dist
