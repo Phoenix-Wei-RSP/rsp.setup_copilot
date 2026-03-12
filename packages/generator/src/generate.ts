@@ -20,8 +20,8 @@ async function main() {
   // Construct generation context
   const context: GenerateContext = {
     version: pkgJson.version,
-    repoUrl: 'https://github.com/your-org/rsp.setup_copilot',
-    webUrl: 'https://your-org.github.io/rsp.setup_copilot'
+    repoUrl: 'https://github.com/Phoenix-Wei-RSP/rsp.setup_copilot',
+    webUrl: 'https://phoenix-wei-rsp.github.io/rsp.setup_copilot'
   };
 
   console.log(`Generating installation documentation v${context.version}...`);
