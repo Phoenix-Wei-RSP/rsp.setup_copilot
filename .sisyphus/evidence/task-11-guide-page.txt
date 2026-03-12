@@ -1,0 +1,21 @@
+Guide.tsx has been updated with the following structured placeholders:
+
+1. Installation Checklist:
+   - Contains an unordered list with 6 placeholder tasks (TODOs), each paired with a disabled checkbox component to resemble a progress list.
+
+2. Usage Examples Section:
+   - Contains three code block placeholders showing examples of using the generated installation.md, sync command, and skill addition command.
+   - Code blocks are marked with TODO comments.
+
+3. Configuration Section:
+   - Contains a list of 3 placeholder articles detailing configuration for Custom Skills, Hook Configuration, and MCP Server Settings.
+   - Each configuration item contains a TODO description.
+
+4. Frequently Asked Questions (FAQ) Section:
+   - A `<dl>` structure with 5 terms (`<dt>`) for questions and definitions (`<dd>`) for answers.
+   - All answers are explicitly marked as TODO.
+
+5. Call-to-Action (CTA):
+   - A React Router `<Link>` directing the user back to the Home page.
+
+Like Home.tsx, the styling is driven by App.css applying a cohesive design language (lists, dark card components, styled links). All details are TODOs without complete implementations.

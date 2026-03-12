@@ -1098,7 +1098,7 @@ Max Concurrent: 5 (Wave 2)
   - Files: `.github/workflows/pages.yml`
   - Pre-commit: 无
 
-- [ ] 10. 端到端集成 — 生成完整 installation.md 并验证
+- [x] 10. 端到端集成 — 生成完整 installation.md 并验证
 
   **What to do**:
   - 运行 `pnpm --filter @rsp/generator run generate` 生成完整的 `installation.md`
@@ -1203,7 +1203,7 @@ Max Concurrent: 5 (Wave 2)
   - Files: `packages/generator/dist/installation.md`, `packages/generator/dist/README.md`, 可能的 order 修复
   - Pre-commit: `pnpm --filter @rsp/generator run generate`
 
-- [ ] 11. Web UI 页面内容框架
+- [x] 11. Web UI 页面内容框架
 
   **What to do**:
   - 完善 `packages/web/src/pages/Home.tsx`:

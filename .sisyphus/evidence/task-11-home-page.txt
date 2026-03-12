@@ -1,0 +1,17 @@
+Home.tsx has been updated with the following structured placeholders:
+
+1. Project Description Section:
+   - Contains a heading "What is RSP Setup Copilot?"
+   - Two paragraph placeholders (TODOs) explaining the tool and workflow.
+
+2. Quick Start Section:
+   - An ordered list with 5 placeholder steps (TODOs) covering downloading, copying, and pasting the installation.md.
+
+3. Feature Highlights Section:
+   - Contains a grid with 4 placeholder articles (Modular Architecture, Cross-Platform Symlinks, One-Click Setup, Customizable Rules).
+   - Each article has a TODO paragraph indicating details to be filled.
+
+4. Call-to-Action (CTA):
+   - A React Router `<Link>` directing the user to the `/guide` page.
+
+Styles from App.css apply modern dark-themed typography, grid layouts, and hover effects to the features grid and CTA link. All content is strictly placeholder with no implementation logic.
