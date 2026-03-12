@@ -578,7 +578,7 @@ Max Concurrent: 5 (Wave 2)
   - Files: `packages/web/**`
   - Pre-commit: `pnpm --filter @rsp/web exec tsc --noEmit`
 
-- [ ] 5. Common 模块 — header / footer / symlink 跨平台指令
+- [x] 5. Common 模块 — header / footer / symlink 跨平台指令
 
   **What to do**:
   - 创建 `packages/generator/src/modules/common/01-header.ts`:
@@ -689,7 +689,7 @@ Max Concurrent: 5 (Wave 2)
   - Files: `packages/generator/src/modules/common/**`
   - Pre-commit: `pnpm --filter @rsp/generator run generate`
 
-- [ ] 6. Demo skill 模块 + rsp_update skill 模块
+- [x] 6. Demo skill 模块 + rsp_update skill 模块
 
   **What to do**:
   - 创建 `packages/generator/src/modules/skills/01-demo-skill.ts`:
@@ -797,7 +797,7 @@ Max Concurrent: 5 (Wave 2)
   - Files: `packages/generator/src/modules/skills/**`
   - Pre-commit: `pnpm --filter @rsp/generator run generate`
 
-- [ ] 7. Demo hook 模块 + Demo MCP 模块
+- [x] 7. Demo hook 模块 + Demo MCP 模块
 
   **What to do**:
   - 创建 `packages/generator/src/modules/hooks/01-demo-hook.ts`:
@@ -926,7 +926,7 @@ Max Concurrent: 5 (Wave 2)
   - Files: `packages/generator/src/modules/hooks/**`, `packages/generator/src/modules/mcps/**`
   - Pre-commit: `pnpm --filter @rsp/generator run generate`
 
-- [ ] 8. GitHub Actions — Release workflow
+- [x] 8. GitHub Actions — Release workflow
 
   **What to do**:
   - 创建 `.github/workflows/release.yml`:
@@ -1016,7 +1016,7 @@ Max Concurrent: 5 (Wave 2)
   - Files: `.github/workflows/release.yml`
   - Pre-commit: 无
 
-- [ ] 9. GitHub Actions — Pages 部署 workflow
+- [x] 9. GitHub Actions — Pages 部署 workflow
 
   **What to do**:
   - 创建 `.github/workflows/pages.yml`:
