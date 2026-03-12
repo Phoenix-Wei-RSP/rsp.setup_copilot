@@ -1,0 +1,56 @@
+## Task 3: Module Ordering Evidence
+
+### Numeric Prefix Sorting Test
+
+**Test Setup**:
+- Module 1: 01-first.ts (order: 1)
+- Module 2: 02-second.ts (order: 2)
+
+**Expected Order**: 01-first.ts before 02-second.ts
+
+**Generated installation.md**:
+```markdown
+# FIRST MODULE
+Version: 0.1.0
+
+---
+
+# SECOND MODULE
+Repo: https://github.com/your-org/rsp.setup_copilot
+```
+
+**Sorting Algorithm**:
+```typescript
+function sortModuleFiles(files: string[]): string[] {
+  return files.sort((a, b) => {
+    const aMatch = a.match(/(\d+)-/);
+    const bMatch = b.match(/(\d+)-/);
+    
+    if (!aMatch || !bMatch) {
+      return a.localeCompare(b);
+    }
+    
+    const aNum = parseInt(aMatch[1], 10);
+    const bNum = parseInt(bMatch[1], 10);
+    
+    return aNum - bNum;
+  });
+}
+```
+
+**Key Features**:
+- Regex extracts numeric prefix: /(\d+)-/
+- Converts to integers for natural numeric sort
+- Fallback to lexicographic sort if no match
+- Handles edge cases (10-x comes after 02-x, not before)
+
+**Separator Verification**:
+- Modules separated by `\n\n---\n\n`
+- Empty line before and after `---`
+- Consistent concatenation
+
+**Verification**: ✅ PASSED
+- Correct ordering (01 before 02)
+- Context properly passed to generate() functions
+- Separator correctly inserted
+- No trailing separator
