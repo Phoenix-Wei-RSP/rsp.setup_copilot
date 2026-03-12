@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
@@ -38,6 +38,8 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -48,11 +50,11 @@ jobs:
           name: generator-dist
           path: ./generator-dist
 
-       - name: Create GitHub Release
-         uses: softprops/action-gh-release@v2
-         with:
-           tag_name: v${{ github.run_number }}
-           files: |
-             ./generator-dist/installation.md
-             ./generator-dist/README.md
-           draft: true
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          files: |
+            ./generator-dist/installation.md
+            ./generator-dist/README.md
+          draft: true
