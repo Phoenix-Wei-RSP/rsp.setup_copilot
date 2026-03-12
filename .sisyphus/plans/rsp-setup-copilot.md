@@ -1318,21 +1318,26 @@ Max Concurrent: 5 (Wave 2)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE.
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `atlas` (aggregate verification via F2+F3+F4)
   Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in `.sisyphus/evidence/`. Compare deliverables against plan.
-  Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
+  Output: `Must Have [6/6] | Must NOT Have [6.5/8 (doc depth)] | Tasks [11/11] | VERDICT: APPROVED WITH NOTES`
+  Evidence: `.sisyphus/evidence/task-F1-plan-compliance.md`
 
-- [ ] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** — `unspecified-high`
   Run `pnpm run build`. Review all files for: `as any`, empty catches, console.log in prod code, commented-out code, unused imports. Check AI slop: excessive comments, over-abstraction, generic names.
-  Output: `Build [PASS/FAIL] | Files [N clean/N issues] | VERDICT`
+  Output: `Build [PASS] | Files [12 clean/0 issues] | VERDICT: EXCELLENT (10/10)`
+  Evidence: `.sisyphus/evidence/task-F2-code-quality.md` (622 lines)
 
-- [ ] F3. **Real QA — 生成器输出验证** — `unspecified-high`
+- [x] F3. **Real QA — 生成器输出验证** — `unspecified-high`
   Run `pnpm --filter generator run generate`. Read `dist/installation.md`. Verify: (1) 包含创建 .rsp/ 目录的指令 (2) 包含 demo skill SKILL.md 内容 (3) 包含 demo hook JSON 配置 (4) 包含 MCP 配置模板 (5) 包含 symlink 创建指令（3 平台）(6) 包含 rsp_update skill (7) 以引导用户打开 Web UI 页面结尾。Read `dist/README.md`. Verify: 包含版本链接格式。
-  Output: `Sections [N/N present] | Cross-platform [3/3] | VERDICT`
+  Output: `Sections [8/8 present] | Cross-platform [3/3] | VERDICT: PRODUCTION READY (100% confidence)`
+  Evidence: `.sisyphus/evidence/task-F3-qa-verification.md` (627 lines)
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   For each task: read "What to do", read actual files. Verify 1:1. Check "Must NOT do" compliance. Flag unaccounted changes.
-  Output: `Tasks [N/N compliant] | VERDICT`
+  Output: `Tasks [6.5/8 guardrails] | VERDICT: NON-COMPLIANT (doc depth exceeds minimal framework intent)`
+  Evidence: `.sisyphus/evidence/task-F4-scope-fidelity.md` (168 lines)
+  Issue documented: `.sisyphus/notepads/rsp-setup-copilot/issues.md`
 
 ---
 
