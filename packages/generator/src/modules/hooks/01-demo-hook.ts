@@ -4,7 +4,7 @@ export default {
   order: 1,
   name: 'demo-hook',
   category: 'hooks',
-  generate: (ctx) => `## Demo Hook
+  generate: () => `## Demo Hook
 
 This example demonstrates the GitHub Copilot hook system with a JSON stdin/stdout pattern.
 

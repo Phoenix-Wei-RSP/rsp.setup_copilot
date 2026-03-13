@@ -4,7 +4,7 @@ export default {
   order: 50,
   name: 'symlink',
   category: 'common',
-  generate: (ctx) => `## Step 2: Migrate Existing Data
+  generate: () => `## Step 2: Migrate Existing Data
 
 Before creating new symlinks, check if the project already has Agent configurations in other directories. **Be careful: these paths might already be symlinks pointing elsewhere!** You must find the true Single Source of Truth and migrate it to the new \`.rsp/\` structure.
 

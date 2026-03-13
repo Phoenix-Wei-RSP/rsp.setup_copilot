@@ -4,7 +4,7 @@ export default {
   order: 11,
   name: 'rsp-update',
   category: 'skills',
-  generate: (ctx) => {
+  generate: () => {
     return `
 ## RSP Update Skill
 

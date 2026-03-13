@@ -4,7 +4,7 @@ export default {
   order: 1,
   name: "header",
   category: "common",
-  generate: (ctx) => {
+  generate: () => {
     return `# RSPSetup Copilot — Installation Guide
 
 ## Instructions

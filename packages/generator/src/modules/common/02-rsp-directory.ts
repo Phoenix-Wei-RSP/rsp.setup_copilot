@@ -4,7 +4,7 @@ export default {
   order: 2,
   name: "rsp-directory",
   category: "common",
-  generate: (ctx) => `## Step 1: Create .rsp/ Directory Structure
+  generate: () => `## Step 1: Create .rsp/ Directory Structure
 
 Create the following directory structure in your project root:
 

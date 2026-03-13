@@ -3,10 +3,10 @@
  * Scans modules directory, sorts by order, generates installation.md
  */
 
-import { readdirSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { GenerateContext, InstallModule } from './types.js';
+import type { InstallModule } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,10 +61,9 @@ function sortModuleFiles(files: string[]): string[] {
 /**
  * Main generate function
  * Scans modules/, dynamically imports each, calls generate(), concatenates output
- * @param context - Generation context with version, URLs, etc.
  * @returns Generated markdown content
  */
-export async function generate(context: GenerateContext): Promise<string> {
+export async function generate(): Promise<string> {
   const moduleFiles = scanModuleFiles();
   const sortedFiles = sortModuleFiles(moduleFiles);
 
@@ -75,7 +74,7 @@ export async function generate(context: GenerateContext): Promise<string> {
     const module = await import(fileUrl);
     const installModule = module.default as InstallModule;
     
-    const output = installModule.generate(context);
+    const output = installModule.generate();
     outputs.push(output);
   }
 
@@ -96,22 +95,27 @@ export async function writeInstallationFile(content: string): Promise<void> {
 /**
  * Generates and writes README.md
  */
-export function writeReadme(context: GenerateContext): void {
+export function writeReadme(): void {
   const distDir = join(__dirname, '..', 'dist');
   mkdirSync(distDir, { recursive: true });
   
+  const configPath = join(__dirname, '..', 'generator.config.json');
+  const pkgPath = join(__dirname, '..', 'package.json');
+  const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+  const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+  
   const readmeContent = `# RSP Setup Copilot
 
-Version: ${context.version}
+Version: ${pkg.version}
 
 For installation instructions, see [installation.md](./installation.md)
 
-Documentation: ${context.webUrl}
-Repository: ${context.repoUrl}
+Documentation: ${config.webUrl}
+Repository: ${config.repoUrl}
 `;
   
   const readmePath = join(distDir, 'README.md');
   writeFileSync(readmePath, readmeContent, 'utf-8');
 }
 
-export type { GenerateContext, InstallModule };
+export type { InstallModule };

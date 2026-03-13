@@ -4,7 +4,7 @@ export default {
   order: 1,
   name: 'demo-mcp',
   category: 'mcps',
-  generate: (ctx) => `## Demo MCP Server Configuration
+  generate: () => `## Demo MCP Server Configuration
 
 This example shows how to configure a Model Context Protocol (MCP) server in VS Code.
 

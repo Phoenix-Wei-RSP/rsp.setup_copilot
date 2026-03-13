@@ -4,7 +4,7 @@ export default {
   order: 10,
   name: 'demo-skill',
   category: 'skills',
-  generate: (ctx) => {
+  generate: () => {
     return `
 ## Example Skill
 
