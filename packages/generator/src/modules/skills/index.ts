@@ -43,20 +43,22 @@ function sha256Dir(skillDir: string): string {
   return hash.digest('hex');
 }
 
-const buildLock = async (distDir: string) => {
+const buildSkills = async (distDir: string) => {
+  mkdirSync(distDir, { recursive: true });
   const lock: LockFile = { version: 1, skills: {} };
 
   for (const tier of ['built-in', 'custom'] as const) {
     const tierDir = join(SKILLS_DIR, tier);
     if (!existsSync(tierDir)) continue;
 
-    const jsonPath = join(SKILLS_DIR, tier === 'built-in' ? 'built-in.json' : 'custom.json');
+    const jsonPath = join(SKILLS_DIR, `${tier}.json`);
     const declarations = existsSync(jsonPath)
       ? (JSON.parse(readFileSync(jsonPath, 'utf-8')) as Array<{ skillName: string; categories: Category[] }>)
       : [];
 
     for (const skillDirName of readdirSync(tierDir)) {
       const skillDir = join(tierDir, skillDirName);
+      const destDir = join(distDir, 'skills', skillDirName);
       const lockKey = tier === 'built-in' ? skillDirName : `rsp/${skillDirName}`;
       const decl = declarations.find(d => d.skillName === skillDirName);
 
@@ -65,30 +67,14 @@ const buildLock = async (distDir: string) => {
         sha256: sha256Dir(skillDir),
         categories: decl?.categories ?? [],
       };
+
+      rmSync(destDir, { recursive: true, force: true });
+      cpSync(skillDir, destDir, { recursive: true });
+      console.log(`✓ dist/skills/${skillDirName}/`);
     }
   }
 
   await writeFile(join(distDir, 'skills.lock.json'), JSON.stringify(lock, null, 2) + '\n', 'utf-8');
 }
 
-
-const copySkills = (distDir: string): void => {
-  for (const tier of ['built-in', 'custom'] as const) {
-    const tierDir = join(SKILLS_DIR, tier);
-    if (!existsSync(tierDir)) continue;
-
-    for (const skillDirName of readdirSync(tierDir)) {
-      const srcDir = join(tierDir, skillDirName);
-      const destDir = join(distDir, 'skills', skillDirName);
-      rmSync(destDir, { recursive: true, force: true });
-      cpSync(srcDir, destDir, { recursive: true });
-      console.log(`✓ dist/skills/${skillDirName}/`);
-    }
-  }
-}
-
-export async function buildSkills(distDir: string) {
-  mkdirSync(distDir, { recursive: true });
-  buildLock(distDir);
-  copySkills(distDir);
-}
+export { buildSkills }
