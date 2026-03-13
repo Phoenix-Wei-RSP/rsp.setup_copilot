@@ -1,0 +1,10 @@
+[
+  {
+    "skillName": "example-skill",
+    "categories": ["Frontend"]
+  },
+  {
+    "skillName": "rsp-update",
+    "categories": ["Backend"]
+  }
+]

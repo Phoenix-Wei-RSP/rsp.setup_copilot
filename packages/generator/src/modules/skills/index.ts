@@ -6,15 +6,19 @@ import { fileURLToPath } from 'node:url';
 
 const SKILLS_DIR = dirname(fileURLToPath(import.meta.url));
 
+type Category = 'Frontend' | 'Backend' | 'QualityAssurance';
+
 interface LockEntry {
   source: string;
   sha256: string;
+  categories: Category[];
 }
 
 interface LockFile {
   version: number;
   skills: Record<string, LockEntry>;
 }
+
 
 function collectFiles(dir: string): string[] {
   const results: string[] = [];
@@ -46,13 +50,20 @@ const buildLock = async (distDir: string) => {
     const tierDir = join(SKILLS_DIR, tier);
     if (!existsSync(tierDir)) continue;
 
+    const jsonPath = join(SKILLS_DIR, tier === 'built-in' ? 'built-in.json' : 'custom.json');
+    const declarations = existsSync(jsonPath)
+      ? (JSON.parse(readFileSync(jsonPath, 'utf-8')) as Array<{ skillName: string; categories: Category[] }>)
+      : [];
+
     for (const skillDirName of readdirSync(tierDir)) {
       const skillDir = join(tierDir, skillDirName);
       const lockKey = tier === 'built-in' ? skillDirName : `rsp/${skillDirName}`;
+      const decl = declarations.find(d => d.skillName === skillDirName);
 
       lock.skills[lockKey] = {
         source: tier,
         sha256: sha256Dir(skillDir),
+        categories: decl?.categories ?? [],
       };
     }
   }
