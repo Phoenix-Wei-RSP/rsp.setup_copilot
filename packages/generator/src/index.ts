@@ -1,121 +1,24 @@
-/**
- * Main entry point for the generator package
- * Scans modules directory, sorts by order, generates installation.md
- */
 
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type { InstallModule } from './types.js';
+import { generate, writeInstallationFile, writeReadme } from './utils.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
-/**
- * Scans all module directories and collects .ts files
- * @returns Array of absolute file paths to module files
- */
-function scanModuleFiles(): string[] {
-  const modulesDir = join(__dirname, 'modules');
-  const categories = ['common', 'skills', 'hooks', 'mcps'];
-  const files: string[] = [];
+async function main() {
+  // Generate markdown content
+  const content = await generate();
 
-  for (const category of categories) {
-    const categoryPath = join(modulesDir, category);
-    try {
-      const entries = readdirSync(categoryPath);
-      for (const entry of entries) {
-        if (entry.endsWith('.ts') && !entry.endsWith('.d.ts')) {
-          files.push(join(categoryPath, entry));
-        }
-      }
-    } catch (err) {
-      // Category directory doesn't exist yet, skip
-      continue;
-    }
-  }
+  // Write installation.md
+  await writeInstallationFile(content);
+  console.log('✓ Generated dist/installation.md');
 
-  return files;
+  // Write README.md
+  writeReadme();
+  console.log('✓ Generated dist/README.md');
+
+  console.log('Done!');
 }
 
-/**
- * Sorts module file paths by numeric prefix
- * Example: 01-header.ts < 02-footer.ts < 10-demo.ts
- */
-function sortModuleFiles(files: string[]): string[] {
-  return files.sort((a, b) => {
-    const aMatch = a.match(/(\d+)-/);
-    const bMatch = b.match(/(\d+)-/);
-    
-    if (!aMatch || !bMatch) {
-      return a.localeCompare(b);
-    }
-    
-    const aNum = parseInt(aMatch[1], 10);
-    const bNum = parseInt(bMatch[1], 10);
-    
-    return aNum - bNum;
-  });
-}
+main().catch((err) => {
+  console.error('Generation failed:', err);
+  process.exit(1);
+});
 
-/**
- * Main generate function
- * Scans modules/, dynamically imports each, calls generate(), concatenates output
- * @returns Generated markdown content
- */
-export async function generate(): Promise<string> {
-  const moduleFiles = scanModuleFiles();
-  const sortedFiles = sortModuleFiles(moduleFiles);
-
-  const outputs: string[] = [];
-
-  for (const filePath of sortedFiles) {
-    const fileUrl = `file:///${filePath.replace(/\\/g, '/')}`;
-    const module = await import(fileUrl);
-    const installModule = module.default as InstallModule;
-    
-    const output = installModule.generate();
-    outputs.push(output);
-  }
-
-  return outputs.join('\n\n---\n\n');
-}
-
-/**
- * Writes generated content to dist/installation.md
- */
-export async function writeInstallationFile(content: string): Promise<void> {
-  const distDir = join(__dirname, '..', 'dist');
-  mkdirSync(distDir, { recursive: true });
-  
-  const outputPath = join(distDir, 'installation.md');
-  writeFileSync(outputPath, content, 'utf-8');
-}
-
-/**
- * Generates and writes README.md
- */
-export function writeReadme(): void {
-  const distDir = join(__dirname, '..', 'dist');
-  mkdirSync(distDir, { recursive: true });
-  
-  const configPath = join(__dirname, '..', 'generator.config.json');
-  const pkgPath = join(__dirname, '..', 'package.json');
-  const config = JSON.parse(readFileSync(configPath, 'utf-8'));
-  const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-  
-  const readmeContent = `# RSP Setup Copilot
-
-Version: ${pkg.version}
-
-For installation instructions, see [installation.md](./installation.md)
-
-Documentation: ${config.webUrl}
-Repository: ${config.repoUrl}
-`;
-  
-  const readmePath = join(distDir, 'README.md');
-  writeFileSync(readmePath, readmeContent, 'utf-8');
-}
-
-export type { InstallModule };
