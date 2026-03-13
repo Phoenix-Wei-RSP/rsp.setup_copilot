@@ -12,7 +12,7 @@
         "tsx"
       ],
       "args": [
-        "${workspaceFolder}/packages/generator/src/generate.ts"
+        "${workspaceFolder}/packages/generator/src/index.ts"
       ],
       "console": "integratedTerminal",
       "skipFiles": [
@@ -21,11 +21,23 @@
       ]
     },
     {
-      "type": "node-terminal",
-      "name": "Run pnpm generate",
+      "type": "node",
       "request": "launch",
-      "command": "pnpm --filter @rsp/generator run generate",
-      "cwd": "${workspaceFolder}"
+      "name": "Debug fetch-built-in-skills",
+      "cwd": "${workspaceFolder}/packages/generator",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--import",
+        "tsx"
+      ],
+      "args": [
+        "${workspaceFolder}/packages/generator/scripts/fetch-built-in-skills.ts"
+      ],
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ]
     }
   ]
 }

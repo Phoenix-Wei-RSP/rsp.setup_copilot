@@ -1,0 +1,10 @@
+[
+  {
+    "repo": "https://github.com/microsoft/playwright-cli",
+    "skillName": "playwright-cli"
+  },
+  {
+    "repo": "https://github.com/vercel-labs/agent-skills",
+    "skillName": "vercel-react-best-practices"
+  }
+]

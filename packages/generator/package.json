@@ -4,7 +4,8 @@
   "type": "module",
   "description": "Generator for RSP setup configuration",
   "scripts": {
-    "build": "pnpm run generate",
+    "build": "pnpm run fetch-skills && pnpm run generate",
+    "fetch-skills": "node --import tsx scripts/fetch-built-in-skills.ts",
     "generate": "node --import tsx src/index.ts"
   },
   "devDependencies": {

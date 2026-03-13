@@ -1,24 +1,9 @@
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { buildSkills } from './modules/skills/index.js';
 
-import { generate, writeInstallationFile, writeReadme } from './utils.js';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DIST_DIR = join(__dirname, '..', 'dist');
 
-
-async function main() {
-  // Generate markdown content
-  const content = await generate();
-
-  // Write installation.md
-  await writeInstallationFile(content);
-  console.log('✓ Generated dist/installation.md');
-
-  // Write README.md
-  writeReadme();
-  console.log('✓ Generated dist/README.md');
-
-  console.log('Done!');
-}
-
-main().catch((err) => {
-  console.error('Generation failed:', err);
-  process.exit(1);
-});
-
+buildSkills(DIST_DIR);
+console.log('Done!');
