@@ -1,30 +1,18 @@
-import { readFileSync, existsSync, cpSync, rmSync } from 'node:fs';
+import { existsSync, cpSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import builtInSkills from '../src/modules/skills/built-in.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const SKILLS_DIR = join(__dirname, '..', 'src', 'modules', 'skills');
-const BUILT_IN_JSON_PATH = join(SKILLS_DIR, 'built-in.json');
-
-interface BuiltInEntry {
-  repo: string;
-  skillName: string;
-}
-
-if (!existsSync(BUILT_IN_JSON_PATH)) {
-  console.log('No built-in.json found, skipping built-in skills.');
-  process.exit(0);
-}
-
-const entries = JSON.parse(readFileSync(BUILT_IN_JSON_PATH, 'utf-8')) as BuiltInEntry[];
 const builtInDir = join(SKILLS_DIR, 'built-in');
 
 console.log('🔍 Fetching built-in skills...\n');
 
-for (const entry of entries) {
+for (const entry of builtInSkills) {
   console.log(`  Installing ${entry.skillName} from ${entry.repo}`);
 
   const result = spawnSync(

@@ -1,0 +1,16 @@
+import { BuiltInSkill } from './types.js';
+
+const builtInSkills: BuiltInSkill[] = [
+  {
+    repo: 'https://github.com/microsoft/playwright-cli',
+    skillName: 'playwright-cli',
+    categories: ['QualityAssurance'],
+  },
+  {
+    repo: 'https://github.com/vercel-labs/agent-skills',
+    skillName: 'vercel-react-best-practices',
+    categories: ['Frontend'],
+  },
+];
+
+export default builtInSkills;

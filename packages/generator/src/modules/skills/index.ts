@@ -3,22 +3,11 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from
 import { writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { type Category, type LockFile, type BaseSkill } from './types.js';
+import builtInSkills from './built-in.js';
+import customSkills from './custom.js';
 
 const SKILLS_DIR = dirname(fileURLToPath(import.meta.url));
-
-type Category = 'Frontend' | 'Backend' | 'QualityAssurance';
-
-interface LockEntry {
-  source: string;
-  sha256: string;
-  categories: Category[];
-}
-
-interface LockFile {
-  version: number;
-  skills: Record<string, LockEntry>;
-}
-
 
 function collectFiles(dir: string): string[] {
   const results: string[] = [];
@@ -51,10 +40,7 @@ const buildSkills = async (distDir: string) => {
     const tierDir = join(SKILLS_DIR, tier);
     if (!existsSync(tierDir)) continue;
 
-    const jsonPath = join(SKILLS_DIR, `${tier}.json`);
-    const declarations = existsSync(jsonPath)
-      ? (JSON.parse(readFileSync(jsonPath, 'utf-8')) as Array<{ skillName: string; categories: Category[] }>)
-      : [];
+    const declarations: BaseSkill[] = tier === 'built-in' ? builtInSkills : customSkills;
 
     for (const skillDirName of readdirSync(tierDir)) {
       const skillDir = join(tierDir, skillDirName);
