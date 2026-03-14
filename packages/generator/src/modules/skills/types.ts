@@ -1,4 +1,4 @@
-export type Category = 'Frontend' | 'Backend' | 'QualityAssurance';
+export type Category = "Frontend" | "Backend" | "QualityAssurance";
 
 export interface BaseSkill {
   skillName: string;
@@ -15,9 +15,9 @@ export interface LockEntry {
   source: string;
   sha256: string;
   categories: Category[];
+  repo?: string;
 }
 
 export interface LockFile {
-  version: number;
   skills: Record<string, LockEntry>;
 }
