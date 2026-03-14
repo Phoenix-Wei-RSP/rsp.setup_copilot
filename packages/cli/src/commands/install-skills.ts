@@ -19,7 +19,7 @@ export async function installSkillsAction(names: string[], options: InstallSkill
   console.log(chalk.blue('📦 Installing skills...\n'));
 
   // Load manifest from adjacent file
-  const manifestPath = join(DIST_DIR, 'skills-manifest.json');
+  const manifestPath = join(DIST_DIR, 'skills', 'skills-manifest.json');
   if (!existsSync(manifestPath)) {
     console.log(chalk.red(`❌ Cannot find skills-manifest.json at ${manifestPath}`));
     process.exit(1);

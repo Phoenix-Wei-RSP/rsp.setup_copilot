@@ -95,6 +95,35 @@ This command will:
    - `.vscode/mcp.json` → `../.rsp/shared/mcps/mcp.json`
    - Inner symlinks for skills, hooks, and AGENTS.md
 
+    - Inner symlinks for skills, hooks, and AGENTS.md
+
+### Install Skills
+
+```bash
+# Install specific skills by name
+rsp install-skills playwright-cli vercel-react-best-practices
+
+# Install skills by category
+rsp install-skills --categories Frontend,Backend
+```
+
+### Install Hooks
+
+```bash
+# Install Copilot-specific hooks into .github/hooks/
+rsp install-hooks
+```
+
+### Install MCP Servers (VSCode)
+
+```bash
+# Install all supported MCP servers for VSCode
+rsp install-mcps
+
+# Install MCP servers by category
+rsp install-mcps --categories QualityAssurance
+```
+
 ### Features
 
 - ✅ **Idempotent** - Safe to run multiple times

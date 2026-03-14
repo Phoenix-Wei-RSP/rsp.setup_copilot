@@ -40,6 +40,7 @@ async function migrateExistingData() {
   console.log(chalk.blue('\n📦 Step 2: Migrating existing data...'));
 
   migrateSkills();
+  migrateHooks();
   migrateMcpConfig();
   migrateAgentsMd();
 }
@@ -51,6 +52,47 @@ function migrateSkills() {
   ];
 
   for (const { from, to } of skillsMigrations) {
+    if (!existsSync(from)) continue;
+
+    if (isSymlinkPointingTo(from, to)) {
+      console.log(chalk.dim(`  ✓ ${from} already points to ${to}, skipping`));
+      continue;
+    }
+
+    const stats = lstatSync(from);
+    let sourceToMove: string;
+
+    if (stats.isSymbolicLink()) {
+      sourceToMove = realpathSync(from);
+      console.log(chalk.blue(`  📍 Resolved symlink ${from} -> ${sourceToMove}`));
+    } else if (stats.isDirectory()) {
+      sourceToMove = from;
+    } else {
+      continue;
+    }
+
+    if (existsSync(to)) {
+      rmSync(to, { recursive: true, force: true });
+      console.log(chalk.dim(`  🗑️  Removed existing ${to}`));
+    }
+
+    renameSync(sourceToMove, to);
+    console.log(chalk.green(`  ✓ Moved ${sourceToMove} -> ${to}`));
+
+    if (stats.isSymbolicLink()) {
+      rmSync(from, { force: true });
+      console.log(chalk.dim(`  🗑️  Removed symlink ${from}`));
+    }
+  }
+}
+
+function migrateHooks() {
+  const hooksMigrations = [
+    { from: '.github/hooks', to: join(SHARED_DIR, 'hooks') },
+    { from: '.claude/hooks', to: join(SHARED_DIR, 'hooks') },
+  ];
+
+  for (const { from, to } of hooksMigrations) {
     if (!existsSync(from)) continue;
 
     if (isSymlinkPointingTo(from, to)) {

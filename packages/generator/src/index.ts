@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { buildSkills } from './modules/skills/index';
 import { buildHooks } from './modules/hooks/index';
 import { buildMcps } from './modules/mcps/index';
+import { buildInstallationMd } from './modules/installation/index';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -14,6 +15,7 @@ async function run() {
   await buildSkills(DIST_DIR);
   await buildHooks(DIST_DIR);
   await buildMcps(DIST_DIR);
+  await buildInstallationMd(DIST_DIR);
   console.log('Done!');
 }
 

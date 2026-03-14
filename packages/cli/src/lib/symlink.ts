@@ -29,9 +29,18 @@ export function setupSymlink(target: string, linkPath: string, description: stri
   if (existsSync(linkPath)) {
     const stats = lstatSync(linkPath);
     if (stats.isSymbolicLink()) {
-      const currentTarget = realpathSync(linkPath);
-      const expectedTarget = resolve(target);
-      if (currentTarget === expectedTarget) {
+      let isCorrect = false;
+      try {
+        const currentTarget = realpathSync(linkPath);
+        const expectedTarget = resolve(target);
+        if (currentTarget === expectedTarget) {
+          isCorrect = true;
+        }
+      } catch {
+        // Broken symlink
+      }
+
+      if (isCorrect) {
         console.log(chalk.dim(`  ✓ ${description} already correct`));
         return true;
       }

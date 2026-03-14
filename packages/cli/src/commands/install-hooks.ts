@@ -1,4 +1,4 @@
-import { existsSync, cpSync, mkdirSync } from 'node:fs';
+import { existsSync, cpSync, mkdirSync, realpathSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
@@ -18,15 +18,24 @@ export async function installHooksAction() {
     return;
   }
 
-  // Ensure target exists
-  if (!existsSync(GITHUB_HOOKS_DIR)) {
-    mkdirSync(GITHUB_HOOKS_DIR, { recursive: true });
+  // Ensure target exists and resolve symlinks to write to the real directory (SSOT)
+  let targetDir = GITHUB_HOOKS_DIR;
+  try {
+    if (existsSync(GITHUB_HOOKS_DIR)) {
+      targetDir = realpathSync(GITHUB_HOOKS_DIR);
+    }
+  } catch {
+    // Fallback to original path if realpath fails
+  }
+
+  if (!existsSync(targetDir)) {
+    mkdirSync(targetDir, { recursive: true });
   }
 
   try {
-    // Copy contents of copilotHooksSrc into GITHUB_HOOKS_DIR
-    cpSync(copilotHooksSrc, GITHUB_HOOKS_DIR, { recursive: true });
-    console.log(chalk.green(`✅ Copilot hooks successfully installed to ${GITHUB_HOOKS_DIR}`));
+    // Copy contents of copilotHooksSrc into the resolved targetDir
+    cpSync(copilotHooksSrc, targetDir, { recursive: true });
+    console.log(chalk.green(`✅ Copilot hooks successfully installed to ${targetDir}`));
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.log(chalk.red(`❌ Failed to copy hooks: ${msg}`));

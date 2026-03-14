@@ -67,7 +67,7 @@ const buildSkills = async (distDir: string) => {
   }
 
   await writeFile(
-    join(distDir, 'skills-manifest.json'),
+    join(distDir, 'skills', 'skills-manifest.json'),
     JSON.stringify(manifest, null, 2) + '\n',
     'utf-8',
   );
