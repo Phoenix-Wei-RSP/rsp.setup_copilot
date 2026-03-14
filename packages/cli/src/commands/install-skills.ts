@@ -10,6 +10,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import chalk from "chalk";
+import { type SkillsManifest, type SkillManifestEntry } from "@rsp/shared";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Note: CLI is bundled in `dist/cli.js`, so __dirname will be `dist/` at runtime.
@@ -37,7 +38,7 @@ export async function installSkillsAction(
   }
 
   const manifestContent = readFileSync(manifestPath, "utf-8");
-  let manifest;
+  let manifest: SkillsManifest;
   try {
     manifest = JSON.parse(manifestContent);
   } catch (e) {
@@ -46,14 +47,14 @@ export async function installSkillsAction(
   }
 
   const allSkills = manifest.skills;
-  const targetSkills = new Map<string, any>();
+  const targetSkills = new Map<string, SkillManifestEntry>();
 
   // Determine which skills to install
   const requestedCategories = options.categories
     ? options.categories.split(",").map((c) => c.trim())
     : [];
 
-  for (const [skillKey, skillInfo] of Object.entries<any>(allSkills)) {
+  for (const [skillKey, skillInfo] of Object.entries(allSkills)) {
     // Check if matched by Name
     if (names.includes(skillKey)) {
       targetSkills.set(skillKey, skillInfo);
@@ -62,7 +63,7 @@ export async function installSkillsAction(
 
     // Check if matched by Categories
     if (requestedCategories.length > 0) {
-      const match = skillInfo.categories?.some((cat: string) =>
+      const match = skillInfo.categories.some((cat: string) =>
         requestedCategories.includes(cat),
       );
       if (match) {
@@ -93,7 +94,11 @@ export async function installSkillsAction(
   console.log(chalk.green("\n✅ Skill installation complete!"));
 }
 
-async function installBuiltInSkill(skillName: string, destDir: string, repo: string) {
+async function installBuiltInSkill(
+  skillName: string,
+  destDir: string,
+  repo: string | undefined,
+) {
   console.log(`  Downloading built-in skill: ${skillName}`);
 
   if (!repo) {

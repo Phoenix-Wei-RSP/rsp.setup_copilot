@@ -10,7 +10,7 @@ import {
 import { writeFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { type LockFile } from "./types";
+import { type SkillManifestEntry, type SkillsManifest, type BaseSkill } from "@rsp/shared";
 import builtInSkills from "./built-in";
 import customSkills from "./custom";
 
@@ -41,11 +41,11 @@ function sha256Dir(skillDir: string): string {
 
 const buildSkills = async (distDir: string) => {
   mkdirSync(distDir, { recursive: true });
-  const lock: LockFile = { skills: {} };
+  const manifest: SkillsManifest = { skills: {} };
 
   // 1. Process built-in skills directly from declarations
   for (const decl of builtInSkills) {
-    lock.skills[decl.skillName] = {
+    manifest.skills[decl.skillName] = {
       source: "built-in",
       sha256: "",
       categories: decl.categories,
@@ -62,7 +62,7 @@ const buildSkills = async (distDir: string) => {
       const destDir = join(distDir, "skills", skillDirName);
       const decl = customSkills.find((d) => d.skillName === skillDirName);
 
-      lock.skills[skillDirName] = {
+      manifest.skills[skillDirName] = {
         source: "custom",
         sha256: sha256Dir(skillDir),
         categories: decl?.categories ?? [],
@@ -75,7 +75,7 @@ const buildSkills = async (distDir: string) => {
 
   await writeFile(
     join(distDir, "skills-manifest.json"),
-    JSON.stringify(lock, null, 2) + "\n",
+    JSON.stringify(manifest, null, 2) + "\n",
     "utf-8",
   );
 };

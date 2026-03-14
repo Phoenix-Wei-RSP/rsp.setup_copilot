@@ -1,4 +1,4 @@
-import { BuiltInSkill } from './types.js';
+import { BuiltInSkill } from "@rsp/shared";
 
 const builtInSkills: BuiltInSkill[] = [
   {

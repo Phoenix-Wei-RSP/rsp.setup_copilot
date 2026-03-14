@@ -1,4 +1,4 @@
-import { CustomSkill } from './types.js';
+import { CustomSkill } from "@rsp/shared";
 
 const customSkills: CustomSkill[] = [
   {
