@@ -9,6 +9,7 @@ CLI tool for RSP (agent Skills Protocol) setup and management.
 Download pre-compiled binaries from [GitHub Releases](https://github.com/phoenix-wei-rsp/rsp.setup_copilot/releases):
 
 **macOS:**
+
 ```bash
 # Apple Silicon (M1/M2/M3)
 curl -L -o rsp https://github.com/phoenix-wei-rsp/rsp.setup_copilot/releases/latest/download/rsp-macos-arm64
@@ -22,6 +23,7 @@ sudo mv rsp /usr/local/bin/
 ```
 
 **Linux:**
+
 ```bash
 # x64
 curl -L -o rsp https://github.com/phoenix-wei-rsp/rsp.setup_copilot/releases/latest/download/rsp-linux-x64
@@ -35,6 +37,7 @@ sudo mv rsp /usr/local/bin/
 ```
 
 **Windows:**
+
 ```powershell
 # Download from browser or use curl
 curl -L -o rsp.exe https://github.com/phoenix-wei-rsp/rsp.setup_copilot/releases/latest/download/rsp-windows-x64.exe
@@ -68,6 +71,7 @@ rsp init
 This command will:
 
 1. **Create `.rsp/` directory structure:**
+
    ```
    .rsp/
    ├── AGENTS.md

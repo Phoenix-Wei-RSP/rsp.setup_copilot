@@ -9,22 +9,22 @@ export interface MigrationResult {
 }
 
 export function migrateDirectoryContents(
-  sourceDir: string, 
-  destDir: string, 
-  deleteSource: boolean = true
+  sourceDir: string,
+  destDir: string,
+  deleteSource: boolean = true,
 ): MigrationResult {
   if (!existsSync(destDir)) {
     mkdirSync(destDir, { recursive: true });
   }
-  
+
   const items = readdirSync(sourceDir);
   let hadRealCollision = false;
   let allEquivalent = true;
-  
+
   for (const item of items) {
     const sourcePath = join(sourceDir, item);
     const destPath = join(destDir, item);
-    
+
     if (!existsSync(destPath)) {
       cpSync(sourcePath, destPath, { recursive: true });
       console.log(chalk.dim(`    Copied ${sourcePath} -> ${destPath}`));
@@ -49,32 +49,34 @@ export function migrateDirectoryContents(
           rmSync(sourcePath, { recursive: true, force: true });
         }
       } else {
-        console.log(chalk.red(`    ❌ Collision: ${destPath} has different content than ${sourcePath}`));
+        console.log(
+          chalk.red(`    ❌ Collision: ${destPath} has different content than ${sourcePath}`),
+        );
         hadRealCollision = true;
         allEquivalent = false;
       }
     }
   }
-  
+
   return { hadRealCollision, allEquivalent };
 }
 
 export function moveAllFiles(source: string, dest: string): void {
   if (!existsSync(source)) return;
-  
+
   const stats = lstatSync(source);
   if (stats.isSymbolicLink()) {
     console.log(chalk.dim(`  Skipping symlink ${source} in final sweep`));
     return;
   }
-  
+
   const files = readdirSync(source);
   let hadCollision = false;
-  
+
   for (const file of files) {
     const fromPath = join(source, file);
     const toPath = join(dest, file);
-    
+
     if (!existsSync(toPath)) {
       cpSync(fromPath, toPath, { recursive: true });
       console.log(chalk.dim(`  Moved ${fromPath} -> ${toPath}`));
@@ -91,7 +93,7 @@ export function moveAllFiles(source: string, dest: string): void {
       }
     }
   }
-  
+
   if (!hadCollision) {
     rmSync(source, { recursive: true, force: true });
     console.log(chalk.dim(`  Removed original ${source}`));

@@ -19,6 +19,7 @@ Automated skill for upgrading your RSP Setup Copilot configuration to the latest
 ### Step 1: Fetch Latest Version
 
 TODO: Implement version fetching logic
+
 - Query GitHub API for latest release
 - Download installation.md from latest version
 - Compare current version with latest
@@ -26,6 +27,7 @@ TODO: Implement version fetching logic
 ### Step 2: Compare Versions
 
 TODO: Implement version comparison logic
+
 - Parse current .rsp/ configuration
 - Identify new skills, hooks, or MCPs
 - Detect breaking changes or deprecated features
@@ -34,6 +36,7 @@ TODO: Implement version comparison logic
 ### Step 3: Apply Changes
 
 TODO: Implement upgrade application logic
+
 - Back up current configuration
 - Apply new files and updates
 - Migrate configuration settings

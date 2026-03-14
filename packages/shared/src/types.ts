@@ -1,5 +1,5 @@
 /** Supported skill categories */
-export type Category = "Frontend" | "Backend" | "QualityAssurance";
+export type Category = 'Frontend' | 'Backend' | 'QualityAssurance';
 
 /** Base skill definition */
 export interface BaseSkill {
@@ -17,7 +17,7 @@ export type CustomSkill = BaseSkill;
 
 /** A single entry in the skills manifest / lock file */
 export interface SkillManifestEntry {
-  source: "built-in" | "custom";
+  source: 'built-in' | 'custom';
   sha256: string;
   categories: Category[];
   repo?: string;

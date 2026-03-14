@@ -1,4 +1,4 @@
-import { CustomSkill } from "@rsp/shared";
+import { CustomSkill } from '@rsp/shared';
 
 const customSkills: CustomSkill[] = [
   {

@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,6 +14,6 @@ const buildHooks = async (distDir: string) => {
     cpSync(copilotDir, targetHooksDir, { recursive: true });
     console.log('✓ dist/hooks/ (Copilot)');
   }
-}
+};
 
 export { buildHooks };

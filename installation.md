@@ -46,7 +46,7 @@ Before creating new symlinks, check if the project already has Agent configurati
 3. **Check for existing AGENTS.md files**:
    - If `.claude/AGENTS.md` exists, move it to `.rsp/AGENTS.md`
    - If `.github/copilot-instructions.md` exists, move it to `.rsp/AGENTS.md`
-4. **Check for other configuration files in `.claude/` or `.github/`**: 
+4. **Check for other configuration files in `.claude/` or `.github/`**:
    - If `.claude/` directory has other files, move all its contents to `.rsp/claude/`
    - If `.github/` directory has other files, move all its contents to `.rsp/github/`
 

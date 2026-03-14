@@ -1,18 +1,11 @@
-import { createHash } from "node:crypto";
-import {
-  cpSync,
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  rmSync,
-} from "node:fs";
-import { writeFile } from "node:fs/promises";
-import { dirname, join, relative } from "node:path";
-import { fileURLToPath } from "node:url";
-import { type SkillManifestEntry, type SkillsManifest, type BaseSkill } from "@rsp/shared";
-import builtInSkills from "./built-in";
-import customSkills from "./custom";
+import { createHash } from 'node:crypto';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
+import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { type SkillsManifest } from '@rsp/shared';
+import builtInSkills from './built-in';
+import customSkills from './custom';
 
 const SKILLS_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -30,13 +23,13 @@ function collectFiles(dir: string): string[] {
 }
 
 function sha256Dir(skillDir: string): string {
-  const hash = createHash("sha256");
+  const hash = createHash('sha256');
   const files = collectFiles(skillDir).sort();
   for (const file of files) {
     hash.update(relative(skillDir, file));
     hash.update(readFileSync(file));
   }
-  return hash.digest("hex");
+  return hash.digest('hex');
 }
 
 const buildSkills = async (distDir: string) => {
@@ -46,8 +39,8 @@ const buildSkills = async (distDir: string) => {
   // 1. Process built-in skills directly from declarations
   for (const decl of builtInSkills) {
     manifest.skills[decl.skillName] = {
-      source: "built-in",
-      sha256: "",
+      source: 'built-in',
+      sha256: '',
       categories: decl.categories,
       repo: decl.repo,
     };
@@ -55,15 +48,15 @@ const buildSkills = async (distDir: string) => {
   }
 
   // 2. Process custom skills from the filesystem
-  const customTierDir = join(SKILLS_DIR, "custom");
+  const customTierDir = join(SKILLS_DIR, 'custom');
   if (existsSync(customTierDir)) {
     for (const skillDirName of readdirSync(customTierDir)) {
       const skillDir = join(customTierDir, skillDirName);
-      const destDir = join(distDir, "skills", skillDirName);
+      const destDir = join(distDir, 'skills', skillDirName);
       const decl = customSkills.find((d) => d.skillName === skillDirName);
 
       manifest.skills[skillDirName] = {
-        source: "custom",
+        source: 'custom',
         sha256: sha256Dir(skillDir),
         categories: decl?.categories ?? [],
       };
@@ -74,9 +67,9 @@ const buildSkills = async (distDir: string) => {
   }
 
   await writeFile(
-    join(distDir, "skills-manifest.json"),
-    JSON.stringify(manifest, null, 2) + "\n",
-    "utf-8",
+    join(distDir, 'skills-manifest.json'),
+    JSON.stringify(manifest, null, 2) + '\n',
+    'utf-8',
   );
 };
 

@@ -5,4 +5,4 @@ export type {
   CustomSkill,
   SkillManifestEntry,
   SkillsManifest,
-} from "./types";
+} from './types';

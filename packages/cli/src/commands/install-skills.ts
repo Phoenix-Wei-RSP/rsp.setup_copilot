@@ -1,48 +1,36 @@
-import {
-  existsSync,
-  mkdirSync,
-  rmSync,
-  readFileSync,
-  cpSync,
-  lstatSync,
-} from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
-import chalk from "chalk";
-import { type SkillsManifest, type SkillManifestEntry } from "@rsp/shared";
+import { existsSync, mkdirSync, rmSync, readFileSync, cpSync, lstatSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import chalk from 'chalk';
+import { type SkillsManifest, type SkillManifestEntry } from '@rsp/shared';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Note: CLI is bundled in `dist/cli.js`, so __dirname will be `dist/` at runtime.
 const DIST_DIR = __dirname;
-const RSP_DIR = ".rsp";
-const SHARED_SKILLS_DIR = join(process.cwd(), RSP_DIR, "shared", "skills");
+const RSP_DIR = '.rsp';
+const SHARED_SKILLS_DIR = join(process.cwd(), RSP_DIR, 'shared', 'skills');
 
 interface InstallSkillsOptions {
   categories?: string;
 }
 
-export async function installSkillsAction(
-  names: string[],
-  options: InstallSkillsOptions,
-) {
-  console.log(chalk.blue("📦 Installing skills...\n"));
+export async function installSkillsAction(names: string[], options: InstallSkillsOptions) {
+  console.log(chalk.blue('📦 Installing skills...\n'));
 
   // Load manifest from adjacent file
-  const manifestPath = join(DIST_DIR, "skills-manifest.json");
+  const manifestPath = join(DIST_DIR, 'skills-manifest.json');
   if (!existsSync(manifestPath)) {
-    console.log(
-      chalk.red(`❌ Cannot find skills-manifest.json at ${manifestPath}`),
-    );
+    console.log(chalk.red(`❌ Cannot find skills-manifest.json at ${manifestPath}`));
     process.exit(1);
   }
 
-  const manifestContent = readFileSync(manifestPath, "utf-8");
+  const manifestContent = readFileSync(manifestPath, 'utf-8');
   let manifest: SkillsManifest;
   try {
     manifest = JSON.parse(manifestContent);
-  } catch (e) {
-    console.log(chalk.red("❌ Failed to parse skills-manifest.json"));
+  } catch {
+    console.log(chalk.red('❌ Failed to parse skills-manifest.json'));
     process.exit(1);
   }
 
@@ -51,7 +39,7 @@ export async function installSkillsAction(
 
   // Determine which skills to install
   const requestedCategories = options.categories
-    ? options.categories.split(",").map((c) => c.trim())
+    ? options.categories.split(',').map((c) => c.trim())
     : [];
 
   for (const [skillKey, skillInfo] of Object.entries(allSkills)) {
@@ -63,9 +51,7 @@ export async function installSkillsAction(
 
     // Check if matched by Categories
     if (requestedCategories.length > 0) {
-      const match = skillInfo.categories.some((cat: string) =>
-        requestedCategories.includes(cat),
-      );
+      const match = skillInfo.categories.some((cat: string) => requestedCategories.includes(cat));
       if (match) {
         targetSkills.set(skillKey, skillInfo);
       }
@@ -73,39 +59,31 @@ export async function installSkillsAction(
   }
 
   if (targetSkills.size === 0) {
-    console.log(chalk.yellow("⚠️ No skills matched the criteria."));
+    console.log(chalk.yellow('⚠️ No skills matched the criteria.'));
     return;
   }
 
   for (const [skillName, skillInfo] of targetSkills.entries()) {
-    console.log(
-      `\n⚙️ Processing skill: ${chalk.cyan(skillName)} [${skillInfo.source}]`,
-    );
+    console.log(`\n⚙️ Processing skill: ${chalk.cyan(skillName)} [${skillInfo.source}]`);
 
     const destDir = join(SHARED_SKILLS_DIR, skillName);
 
-    if (skillInfo.source === "built-in") {
+    if (skillInfo.source === 'built-in') {
       await installBuiltInSkill(skillName, destDir, skillInfo.repo);
     } else {
       installCustomSkill(skillName, destDir);
     }
   }
 
-  console.log(chalk.green("\n✅ Skill installation complete!"));
+  console.log(chalk.green('\n✅ Skill installation complete!'));
 }
 
-async function installBuiltInSkill(
-  skillName: string,
-  destDir: string,
-  repo: string | undefined,
-) {
+async function installBuiltInSkill(skillName: string, destDir: string, repo: string | undefined) {
   console.log(`  Downloading built-in skill: ${skillName}`);
 
   if (!repo) {
     console.log(
-      chalk.red(
-        `  ❌ Repository URL not found in manifest for built-in skill ${skillName}`,
-      ),
+      chalk.red(`  ❌ Repository URL not found in manifest for built-in skill ${skillName}`),
     );
     return;
   }
@@ -114,19 +92,9 @@ async function installBuiltInSkill(
   // Since `rsp init` creates a symlink `.claude/skills → .rsp/shared/skills`,
   // the files land directly in our target directory.
   const result = spawnSync(
-    "npx",
-    [
-      "skills",
-      "add",
-      repo,
-      "--skill",
-      skillName,
-      "--agent",
-      "claude-code",
-      "--copy",
-      "-y",
-    ],
-    { stdio: "pipe", encoding: "utf-8" },
+    'npx',
+    ['skills', 'add', repo, '--skill', skillName, '--agent', 'claude-code', '--copy', '-y'],
+    { stdio: 'pipe', encoding: 'utf-8' },
   );
 
   if (result.stdout) process.stdout.write(result.stdout);
@@ -144,14 +112,14 @@ async function installBuiltInSkill(
     // so npx installs to .claude/skills/ or .agents/skills/ as a real directory.
     // We need to find the installed skill and copy it to our target.
     const fallbackPaths = [
-      join(process.cwd(), ".claude", "skills", skillName),
-      join(process.cwd(), ".agents", "skills", skillName),
+      join(process.cwd(), '.claude', 'skills', skillName),
+      join(process.cwd(), '.agents', 'skills', skillName),
     ];
 
     let found = false;
     for (const src of fallbackPaths) {
       if (existsSync(src)) {
-        mkdirSync(join(destDir, ".."), { recursive: true });
+        mkdirSync(join(destDir, '..'), { recursive: true });
         cpSync(src, destDir, { recursive: true });
         console.log(chalk.green(`  ✓ Installed to ${destDir}`));
         found = true;
@@ -161,15 +129,13 @@ async function installBuiltInSkill(
 
     if (!found) {
       console.log(
-        chalk.red(
-          `  ❌ Expected skill directory not found at ${destDir} after install.`,
-        ),
+        chalk.red(`  ❌ Expected skill directory not found at ${destDir} after install.`),
       );
     }
   }
 
   // Clean up any temporary files/dirs created by npx skills add
-  for (const name of [".agents", ".claude", "skills-lock.json"]) {
+  for (const name of ['.agents', '.claude', 'skills-lock.json']) {
     const target = join(process.cwd(), name);
     // Only clean up if it's a real directory (not the symlink created by rsp init)
     if (existsSync(target)) {
@@ -186,12 +152,10 @@ async function installBuiltInSkill(
 }
 
 function installCustomSkill(skillName: string, destDir: string) {
-  const sourceDir = join(DIST_DIR, "skills", skillName);
+  const sourceDir = join(DIST_DIR, 'skills', skillName);
 
   if (!existsSync(sourceDir)) {
-    console.log(
-      chalk.red(`  ❌ Bundled skill directory not found: ${sourceDir}`),
-    );
+    console.log(chalk.red(`  ❌ Bundled skill directory not found: ${sourceDir}`));
     return;
   }
 

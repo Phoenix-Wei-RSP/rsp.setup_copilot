@@ -8,13 +8,13 @@ The RSP CLI has been successfully compiled into standalone binaries for all majo
 
 All binaries are built and ready for distribution:
 
-| Platform | Binary Name | Size | Status |
-|----------|-------------|------|--------|
-| macOS (Apple Silicon) | `rsp-macos-arm64` | 58 MB | ✅ Built |
-| macOS (Intel) | `rsp-macos-x64` | 63 MB | ✅ Built |
-| Linux (x64) | `rsp-linux-x64` | 99 MB | ✅ Built |
-| Linux (ARM64) | `rsp-linux-arm64` | 97 MB | ✅ Built |
-| Windows (x64) | `rsp-windows-x64.exe` | 110 MB | ✅ Built |
+| Platform              | Binary Name           | Size   | Status   |
+| --------------------- | --------------------- | ------ | -------- |
+| macOS (Apple Silicon) | `rsp-macos-arm64`     | 58 MB  | ✅ Built |
+| macOS (Intel)         | `rsp-macos-x64`       | 63 MB  | ✅ Built |
+| Linux (x64)           | `rsp-linux-x64`       | 99 MB  | ✅ Built |
+| Linux (ARM64)         | `rsp-linux-arm64`     | 97 MB  | ✅ Built |
+| Windows (x64)         | `rsp-windows-x64.exe` | 110 MB | ✅ Built |
 
 Binary locations: `packages/cli/dist/binaries/`
 
@@ -27,6 +27,7 @@ curl -fsSL https://raw.githubusercontent.com/phoenix-wei-rsp/rsp.setup_copilot/m
 ```
 
 The install script automatically:
+
 - Detects OS and architecture
 - Downloads the correct binary
 - Installs to `/usr/local/bin/rsp`
@@ -35,6 +36,7 @@ The install script automatically:
 ### 2. Manual Download
 
 Download from GitHub Releases:
+
 ```
 https://github.com/phoenix-wei-rsp/rsp.setup_copilot/releases/latest
 ```
@@ -42,12 +44,14 @@ https://github.com/phoenix-wei-rsp/rsp.setup_copilot/releases/latest
 Then move to PATH:
 
 **macOS/Linux:**
+
 ```bash
 chmod +x rsp-*
 sudo mv rsp-* /usr/local/bin/rsp
 ```
 
 **Windows:**
+
 ```powershell
 # Move rsp-windows-x64.exe to a directory in your PATH
 ```
@@ -90,6 +94,7 @@ A GitHub Actions workflow is configured at `.github/workflows/cli-release.yml`:
 ### Trigger
 
 Push a tag starting with `cli-v`:
+
 ```bash
 git tag cli-v0.1.0
 git push origin cli-v0.1.0
@@ -105,6 +110,7 @@ git push origin cli-v0.1.0
 ### Release Assets
 
 Each release will contain:
+
 - `rsp-macos-arm64`
 - `rsp-macos-x64`
 - `rsp-linux-x64`
@@ -137,14 +143,15 @@ cd /tmp && mkdir test-project && cd test-project
 
 ## File Size Comparison
 
-| Runtime | Binary Size | Notes |
-|---------|-------------|-------|
-| Bun | ~58-110 MB | Includes full Bun runtime |
-| pkg | ~50 MB | Includes Node.js runtime |
-| Node SEA | ~30 MB | Requires Node 18+ |
-| Deno | ~30 MB | Includes Deno runtime |
+| Runtime  | Binary Size | Notes                     |
+| -------- | ----------- | ------------------------- |
+| Bun      | ~58-110 MB  | Includes full Bun runtime |
+| pkg      | ~50 MB      | Includes Node.js runtime  |
+| Node SEA | ~30 MB      | Requires Node 18+         |
+| Deno     | ~30 MB      | Includes Deno runtime     |
 
 Trade-off: Bun binaries are larger but provide:
+
 - Fast startup time
 - No external dependencies
 - Cross-compilation support from macOS
@@ -163,6 +170,7 @@ Trade-off: Bun binaries are larger but provide:
 To publish the first release:
 
 1. **Test locally:**
+
    ```bash
    cd packages/cli
    bun run build:binary
@@ -170,6 +178,7 @@ To publish the first release:
    ```
 
 2. **Create release:**
+
    ```bash
    git add .
    git commit -m "feat: Add CLI binary compilation support"
@@ -192,11 +201,12 @@ To publish the first release:
 ### Update Bun Version
 
 Edit `.github/workflows/cli-release.yml`:
+
 ```yaml
 - name: Setup Bun
   uses: oven-sh/setup-bun@v1
   with:
-    bun-version: 1.3.10  # Update this
+    bun-version: 1.3.10 # Update this
 ```
 
 ### Add New Platform
@@ -204,6 +214,7 @@ Edit `.github/workflows/cli-release.yml`:
 Edit `scripts/build-binaries.sh` and `.github/workflows/cli-release.yml` to add new target.
 
 Supported Bun targets:
+
 - `bun-darwin-arm64`
 - `bun-darwin-x64`
 - `bun-linux-x64`
@@ -215,6 +226,7 @@ Supported Bun targets:
 ### Binary Too Large
 
 Current size is acceptable for a standalone tool. To reduce:
+
 - Use `--minify` flag (minor impact)
 - Consider alternative runtimes (pkg, Deno) for smaller size
 - Use compression (gzip/brotli) for distribution
@@ -222,6 +234,7 @@ Current size is acceptable for a standalone tool. To reduce:
 ### Cross-Compilation Issues
 
 Bun automatically downloads target runtimes during cross-compilation. Ensure:
+
 - Stable internet connection
 - Sufficient disk space (~500MB for all targets)
 - Bun 1.0+ installed
@@ -243,6 +256,7 @@ Windows requires Developer Mode or Administrator privileges for symlinks. The bi
 ## Support
 
 For issues with binary compilation or distribution:
+
 1. Check Bun documentation: https://bun.sh/docs/bundler/executables
 2. Open issue: https://github.com/phoenix-wei-rsp/rsp.setup_copilot/issues
 3. Review GitHub Actions logs for CI failures

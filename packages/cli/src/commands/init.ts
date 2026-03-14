@@ -52,15 +52,15 @@ function migrateSkills() {
 
   for (const { from, to } of skillsMigrations) {
     if (!existsSync(from)) continue;
-    
+
     if (isSymlinkPointingTo(from, to)) {
       console.log(chalk.dim(`  ✓ ${from} already points to ${to}, skipping`));
       continue;
     }
-    
+
     const stats = lstatSync(from);
     let sourceToMove: string;
-    
+
     if (stats.isSymbolicLink()) {
       sourceToMove = realpathSync(from);
       console.log(chalk.blue(`  📍 Resolved symlink ${from} -> ${sourceToMove}`));
@@ -69,15 +69,15 @@ function migrateSkills() {
     } else {
       continue;
     }
-    
+
     if (existsSync(to)) {
       rmSync(to, { recursive: true, force: true });
       console.log(chalk.dim(`  🗑️  Removed existing ${to}`));
     }
-    
+
     renameSync(sourceToMove, to);
     console.log(chalk.green(`  ✓ Moved ${sourceToMove} -> ${to}`));
-    
+
     if (stats.isSymbolicLink()) {
       rmSync(from, { force: true });
       console.log(chalk.dim(`  🗑️  Removed symlink ${from}`));
@@ -92,18 +92,17 @@ function migrateMcpConfig() {
       renameSync('.vscode/mcp.json', mcpDest);
       console.log(chalk.green(`  ✓ Migrated .vscode/mcp.json to ${mcpDest}`));
     } else {
-      console.log(chalk.yellow(`  ⚠️ ${mcpDest} already exists, skipping .vscode/mcp.json migration`));
+      console.log(
+        chalk.yellow(`  ⚠️ ${mcpDest} already exists, skipping .vscode/mcp.json migration`),
+      );
     }
   }
 }
 
 function migrateAgentsMd() {
   const dest = join(RSP_DIR, 'AGENTS.md');
-  const sources = [
-    '.claude/AGENTS.md',
-    '.github/copilot-instructions.md'
-  ];
-  
+  const sources = ['.claude/AGENTS.md', '.github/copilot-instructions.md'];
+
   for (const file of sources) {
     if (existsSync(file)) {
       if (existsSync(dest)) rmSync(dest, { force: true });
@@ -121,13 +120,17 @@ function moveRemainingFiles() {
 
 function establishSymlinks() {
   console.log(chalk.blue('\n🔗 Step 3: Establishing symlinks...'));
-  
+
   setupSymlink(join(RSP_DIR, 'github'), '.github', 'Top-level .github');
   setupSymlink(join(RSP_DIR, 'claude'), '.claude', 'Top-level .claude');
 
   setupSymlink(join('..', 'shared', 'skills'), join(RSP_DIR, 'github', 'skills'), 'GitHub skills');
   setupSymlink(join('..', 'shared', 'hooks'), join(RSP_DIR, 'github', 'hooks'), 'GitHub hooks');
-  setupSymlink(join('..', 'AGENTS.md'), join(RSP_DIR, 'github', 'copilot-instructions.md'), 'GitHub copilot-instructions');
+  setupSymlink(
+    join('..', 'AGENTS.md'),
+    join(RSP_DIR, 'github', 'copilot-instructions.md'),
+    'GitHub copilot-instructions',
+  );
 
   setupSymlink(join('..', 'shared', 'skills'), join(RSP_DIR, 'claude', 'skills'), 'Claude skills');
   setupSymlink(join('..', 'AGENTS.md'), join(RSP_DIR, 'claude', 'AGENTS.md'), 'Claude AGENTS.md');
@@ -136,6 +139,10 @@ function establishSymlinks() {
     if (!existsSync('.vscode')) {
       mkdirSync('.vscode', { recursive: true });
     }
-    setupSymlink(join('..', RSP_DIR, 'shared', 'mcps', 'mcp.json'), '.vscode/mcp.json', 'VSCode mcp.json');
+    setupSymlink(
+      join('..', RSP_DIR, 'shared', 'mcps', 'mcp.json'),
+      '.vscode/mcp.json',
+      'VSCode mcp.json',
+    );
   }
 }
