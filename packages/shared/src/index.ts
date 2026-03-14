@@ -5,4 +5,8 @@ export type {
   CustomSkill,
   SkillManifestEntry,
   SkillsManifest,
+  McpServerConfig,
+  BuiltInMcp,
+  McpManifestEntry,
+  McpsManifest,
 } from './types';

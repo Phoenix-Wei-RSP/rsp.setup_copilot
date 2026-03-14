@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { initAction } from './commands/init.js';
 import { installSkillsAction } from './commands/install-skills.js';
 import { installHooksAction } from './commands/install-hooks.js';
+import { installMcpsAction } from './commands/install-mcps.js';
 
 const program = new Command();
 
@@ -22,5 +23,11 @@ program
   .command('install-hooks')
   .description('Install Copilot hooks into .github/hooks directory')
   .action(installHooksAction);
+
+program
+  .command('install-mcps')
+  .description('Install MCP servers into .vscode/mcp.json')
+  .option('-c, --categories <categories>', 'Comma-separated list of categories to install')
+  .action(installMcpsAction);
 
 program.parse();

@@ -27,3 +27,30 @@ export interface SkillManifestEntry {
 export interface SkillsManifest {
   skills: Record<string, SkillManifestEntry>;
 }
+
+/** A single MCP server configuration structure */
+export interface McpServerConfig {
+  command?: string;
+  args?: string[];
+  env?: Record<string, string>;
+  type?: string;
+  url?: string;
+}
+
+/** Built-in MCP Server declaration */
+export interface BuiltInMcp {
+  mcpId: string;
+  categories: Category[];
+  configs: Record<string, McpServerConfig>; // Key defines the platform: e.g. 'vscode', 'claude'
+}
+
+/** A single entry in the mcps manifest */
+export interface McpManifestEntry {
+  categories: Category[];
+  configs: Record<string, McpServerConfig>;
+}
+
+/** The mcps-manifest.json structure */
+export interface McpsManifest {
+  mcps: Record<string, McpManifestEntry>;
+}
