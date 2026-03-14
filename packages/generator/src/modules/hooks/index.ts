@@ -8,11 +8,13 @@ const buildHooks = async (distDir: string) => {
   const targetHooksDir = join(distDir, 'hooks');
   mkdirSync(targetHooksDir, { recursive: true });
 
-  const copilotDir = join(HOOKS_DIR, 'copilot');
-  if (existsSync(copilotDir)) {
-    // Copy all hook configs and scripts
-    cpSync(copilotDir, targetHooksDir, { recursive: true });
-    console.log('✓ dist/hooks/ (Copilot)');
+  const agents = ['copilot', 'claude'];
+  for (const agent of agents) {
+    const agentDir = join(HOOKS_DIR, agent);
+    if (existsSync(agentDir)) {
+      cpSync(agentDir, join(targetHooksDir, agent), { recursive: true });
+      console.log(`✓ dist/hooks/${agent}/ (${agent})`);
+    }
   }
 };
 
