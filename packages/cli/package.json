@@ -7,7 +7,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "build:binary": "bun build src/index.ts --compile --outfile dist/rsp",
+    "build:binary:all": "bash scripts/build-binaries.sh"
   },
   "dependencies": {
     "commander": "^11.1.0",
