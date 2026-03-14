@@ -9,6 +9,10 @@ const customSkills: CustomSkill[] = [
     skillName: 'rsp-update',
     categories: ['Backend'],
   },
+  {
+    skillName: 'memory-update',
+    categories: ['Frontend', 'Backend', 'QualityAssurance'],
+  },
 ];
 
 export default customSkills;

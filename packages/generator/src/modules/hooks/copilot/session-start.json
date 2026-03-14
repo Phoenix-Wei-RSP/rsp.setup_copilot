@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "osx": ".github/hooks/scripts/memory-sync.sh",
+        "linux": ".github/hooks/scripts/memory-sync.sh",
+        "windows": ".github/hooks/scripts/memory-sync.bat",
+        "timeout": 10
+      }
+    ]
+  }
+}
