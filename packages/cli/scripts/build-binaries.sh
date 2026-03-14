@@ -3,7 +3,7 @@ set -e
 
 echo "🚀 Building RSP CLI binaries for all platforms..."
 
-DIST_DIR="dist/binaries"
+DIST_DIR="../../dist/binaries"
 mkdir -p "$DIST_DIR"
 
 echo ""

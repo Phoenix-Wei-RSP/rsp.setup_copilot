@@ -4,9 +4,11 @@
   "description": "",
   "private": true,
   "type": "module",
-  "main": "index.js",
   "scripts": {
-    "build": "pnpm -r run build",
+    "clean": "rm -rf dist",
+    "build": "pnpm run clean && pnpm run build:generator && pnpm run build:cli",
+    "build:cli": "pnpm --filter @rsp/cli run build",
+    "build:generator": "pnpm --filter @rsp/generator run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

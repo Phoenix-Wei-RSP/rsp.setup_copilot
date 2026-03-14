@@ -5,39 +5,55 @@
 **rsp-setup-copilot** is a pnpm monorepo designed to generate a unified `installation.md` file. This file acts as a massive prompt that developers can paste into the GitHub Copilot agent chat to automatically configure a standardized `.rsp/` directory structure across company projects, including setting up cross-platform symlinks to `.github/` for skills, hooks, and MCPs.
 
 The monorepo contains two primary packages:
-- **`@rsp/generator`** (`packages/generator/`): A modular TypeScript engine that auto-scans configuration modules and concatenates them into a single `installation.md` artifact.
-- **`@rsp/web`** (`packages/web/`): A Vite + React application serving as a documentation site for users.
+
+- **`@rsp/generator`** (`packages/generator/`): A modular TypeScript engine that auto-scans configuration modules and generates skills/hooks assets into the root `dist/` directory.
+- **`@rsp/cli`** (`packages/cli/`): A CLI tool for initializing RSP environments, bundled via Rollup into a single zero-dependency `dist/cli.js` file.
+
+All build outputs are unified into the root `dist/` directory:
+
+- `dist/cli.js` — Single-file CLI bundle (all dependencies included)
+- `dist/skills/` — Generated skill files
+- `dist/hooks/` — Generated hook files
+- `dist/skills.lock.json` — Skills lock file
 
 ## Project Structure
 
 - `packages/generator/`: The TypeScript generator module.
-  - `src/generate.ts`: Main entry point for generating the markdown.
-  - `src/modules/`: Contains the modular markdown segments (common headers, hooks, mcps, skills).
-- `packages/web/`: The React (Vite) documentation frontend.
-- `.github/workflows/`: Contains CI/CD configurations for GitHub Releases and Pages deployment.
+  - `src/index.ts`: Main entry point for generating the markdown.
+  - `src/modules/`: Contains the modular markdown segments (skills, hooks).
+- `packages/cli/`: The CLI tool for RSP initialization.
+  - `src/index.ts`: CLI entry point using Commander.
+  - `rollup.config.mjs`: Rollup config for single-file bundling.
+- `.github/workflows/`: Contains CI/CD configurations for GitHub Releases.
 - `.sisyphus/`: Project management records, containing execution plans, task evidence, and drafts.
-- `PROJECT_COMPLETION_REPORT.md`: A detailed report outlining the successful implementation and architectural choices made during the project setup.
 
 ## Building and Running
 
 Ensure you have [pnpm](https://pnpm.io/) installed.
 
 ### Global Commands (Root)
+
 - **Install dependencies:** `pnpm install`
-- **Build all packages:** `pnpm run build`
+- **Build all (clean → generator → cli):** `pnpm run build`
+- **Build CLI only:** `pnpm run build:cli`
+- **Build generator only:** `pnpm run build:generator`
+- **Clean dist:** `pnpm run clean`
 
 ### Generator (`packages/generator/`)
-- **Build:** `pnpm --filter @rsp/generator run build` (Note: Uses `composite: true` in `tsconfig.json`. If you need to force a clean build, delete `tsconfig.tsbuildinfo` first).
-- **Run Generator:** `pnpm --filter @rsp/generator run generate` (Executes `src/generate.ts` via `tsx`). The output will be located in the `dist/` directory.
 
-### Web Site (`packages/web/`)
-- **Start Dev Server:** `pnpm --filter @rsp/web run dev`
-- **Build for Production:** `pnpm --filter @rsp/web run build`
-- **Preview Production Build:** `pnpm --filter @rsp/web run preview`
+- **Build:** `pnpm --filter @rsp/generator run build` (fetches skills then generates assets into root `dist/`)
+- **Generate only:** `pnpm --filter @rsp/generator run generate`
+
+### CLI (`packages/cli/`)
+
+- **Build:** `pnpm --filter @rsp/cli run build` (Rollup bundles into root `dist/cli.js`)
+- **Build binary:** `pnpm --filter @rsp/cli run build:binary` (Bun compile to `dist/rsp`)
 
 ## Development Conventions
 
-- **TypeScript:** The project strictly uses TypeScript across both frontend and backend tooling.
+- **TypeScript:** The project strictly uses TypeScript across both packages.
 - **Monorepo Management:** Handled by `pnpm-workspace.yaml`. Ensure cross-package dependencies and script executions utilize `pnpm --filter <package_name>`.
-- **Platform Agnostic:** The generator produces documentation that provides compatible symlink instructions across macOS/Linux, Windows Git Bash, and Windows PowerShell.
-- **Strict Linting/Typing:** Maintain zero TypeScript errors and avoid `any` or `@ts-ignore` assertions where possible, as mandated by the project's quality standards.
+- **CLI Bundling:** Uses Rollup to produce a single-file ESM bundle with all npm dependencies (commander, chalk) inlined. Only Node.js built-ins are external.
+- **Generator Output:** The generator executes its code and outputs the _results_ (not bundled source) into root `dist/`.
+- **Platform Agnostic:** The CLI provides compatible symlink handling across macOS/Linux, Windows Git Bash, and Windows PowerShell.
+- **Strict Linting/Typing:** Maintain zero TypeScript errors and avoid `any` or `@ts-ignore` assertions where possible.
