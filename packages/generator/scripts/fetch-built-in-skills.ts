@@ -25,9 +25,21 @@ for (const entry of builtInSkills) {
     throw new Error(`npx skills add failed for ${entry.repo} (exit ${result.status ?? 'unknown'})`);
   }
 
-  const installedSkillDir = join(process.cwd(), '.agents', 'skills', entry.skillName);
-  if (!existsSync(installedSkillDir)) {
-    throw new Error(`Expected skill directory not found at ${installedSkillDir} after install`);
+  const installedPaths = [
+    join(process.cwd(), '.agents', 'skills', entry.skillName),
+    join(process.cwd(), '.claude', 'skills', entry.skillName),
+  ];
+
+  let installedSkillDir = '';
+  for (const p of installedPaths) {
+    if (existsSync(p)) {
+      installedSkillDir = p;
+      break;
+    }
+  }
+
+  if (!installedSkillDir) {
+    throw new Error(`Expected skill directory not found at any of ${installedPaths.join(', ')} after install`);
   }
 
   const destDir = join(builtInDir, entry.skillName);
