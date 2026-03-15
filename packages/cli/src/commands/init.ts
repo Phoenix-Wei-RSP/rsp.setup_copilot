@@ -1,5 +1,6 @@
 import { mkdirSync, existsSync, renameSync, rmSync, lstatSync, realpathSync } from 'node:fs';
 import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 import chalk from 'chalk';
 import { moveAllFiles } from '../lib/migration.js';
 import { isSymlinkPointingTo, setupSymlink } from '../lib/symlink.js';
@@ -10,12 +11,34 @@ const SHARED_DIR = join(RSP_DIR, 'shared');
 export async function initAction() {
   console.log(chalk.blue('🚀 Initializing RSP environment...\n'));
 
+  unstageFromGit();
   createDirectoryStructure();
   await migrateExistingData();
   moveRemainingFiles();
   establishSymlinks();
 
   console.log(chalk.green('\n✅ RSP Initialization complete!'));
+}
+
+function unstageFromGit() {
+  const dirsToUnstage = ['.github', '.claude'].filter((dir) => {
+    try {
+      return existsSync(dir) && !lstatSync(dir).isSymbolicLink();
+    } catch {
+      return false;
+    }
+  });
+
+  if (dirsToUnstage.length > 0) {
+    try {
+      // Pre-emptively remove these directories from the git index before they become symlinks.
+      // This prevents the "fatal: pathspec is beyond a symbolic link" error if the user
+      // tries to stage the old deleted files explicitly (e.g. via an IDE's "Stage All").
+      execSync(`git rm -rf --cached ${dirsToUnstage.join(' ')}`, { stdio: 'ignore' });
+    } catch {
+      // Ignore git errors (e.g., if git is not installed or it's not a git repository)
+    }
+  }
 }
 
 function createDirectoryStructure() {
