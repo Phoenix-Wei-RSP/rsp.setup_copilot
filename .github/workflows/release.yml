@@ -29,11 +29,14 @@ jobs:
       - name: Build all
         run: pnpm run build
 
+      - name: Create Zip Package
+        run: zip -r rsp-dist.zip dist/
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: dist/
+          name: dist-package
+          path: rsp-dist.zip
 
   release:
     needs: build
@@ -47,13 +50,26 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: dist
-          path: ./dist
+          name: dist-package
+          path: .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
-          files: |
-            ./dist/**/*
+          files: rsp-dist.zip
           draft: true
+          body: |
+            ## RSP Setup Copilot Bundle
+            
+            This release contains the full `dist` bundle including the CLI and all generated resources (skills, hooks, MCPs).
+            
+            ### How to use
+            1. Download `rsp-dist.zip`
+            2. Extract it
+            3. Run `node dist/cli.js init`
+            
+            Alternatively, use npm:
+            ```bash
+            npx @rsp/cli init
+            ```
